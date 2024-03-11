@@ -1,0 +1,449 @@
+Program.Sub.ScreenSU.Start
+gui.Form1..create
+gui.Form1..caption("Select Customer Range")
+gui.Form1..size(4410,1980)
+gui.Form1..minx(0)
+gui.Form1..miny(0)
+gui.Form1..position(0,0)
+gui.Form1..event(unload,form1_unload)
+gui.Form1..alwaysontop(False)
+gui.Form1..fontname("Arial")
+gui.Form1..fontsize(8)
+gui.Form1..forecolor(0)
+gui.Form1..fontstyle(False,False,False,False,)
+gui.Form1..BackColor(-2147483633)
+gui.Form1..controlbox(True)
+gui.Form1..maxbutton(True)
+gui.Form1..minbutton(True)
+gui.Form1..mousepointer(0)
+gui.Form1..moveable(True)
+gui.Form1..sizeable(False)
+gui.Form1..ShowInTaskBar(True)
+gui.Form1..titlebar(True)
+gui.Form1.txtCusStart.create(textbox,"",True,1215,300,0,230,300,True,0,Arial,8,-2147483643,1)
+gui.Form1.txtCusStart.event(lostfocus,txtcusstart_lostfocus)
+gui.Form1.txtCusStart.defaultvalue("")
+gui.Form1.txtCusStart.controlgroup(0)
+gui.Form1.txtCusEnd.create(textbox,"",True,1215,300,0,2200,300,True,0,Arial,8,-2147483643,1)
+gui.Form1.txtCusEnd.defaultvalue("")
+gui.Form1.txtCusEnd.controlgroup(0)
+gui.Form1.cmdCusStart.create(button)
+gui.Form1.cmdCusStart.caption("^")
+gui.Form1.cmdCusStart.visible(True)
+gui.Form1.cmdCusStart.size(420,300)
+gui.Form1.cmdCusStart.zorder(0)
+gui.Form1.cmdCusStart.position(1500,300)
+gui.Form1.cmdCusStart.enabled(True)
+gui.Form1.cmdCusStart.fontname("Arial")
+gui.Form1.cmdCusStart.fontsize(8)
+gui.Form1.cmdCusStart.event(click,cmdcusstart_click)
+gui.Form1.cmdCusStart.defaultvalue("")
+gui.Form1.cmdCusStart.controlgroup(0)
+gui.Form1.cmdCusEnd.create(button)
+gui.Form1.cmdCusEnd.caption("^")
+gui.Form1.cmdCusEnd.visible(True)
+gui.Form1.cmdCusEnd.size(420,300)
+gui.Form1.cmdCusEnd.zorder(0)
+gui.Form1.cmdCusEnd.position(3500,300)
+gui.Form1.cmdCusEnd.enabled(True)
+gui.Form1.cmdCusEnd.fontname("Arial")
+gui.Form1.cmdCusEnd.fontsize(8)
+gui.Form1.cmdCusEnd.event(click,cmdcusend_click)
+gui.Form1.cmdCusEnd.defaultvalue("")
+gui.Form1.cmdCusEnd.controlgroup(0)
+gui.Form1.chkAllCustomers.create(checkbox)
+gui.Form1.chkAllCustomers.caption("All Customers")
+gui.Form1.chkAllCustomers.visible(True)
+gui.Form1.chkAllCustomers.size(1935,255)
+gui.Form1.chkAllCustomers.zorder(0)
+gui.Form1.chkAllCustomers.position(1900,800)
+gui.Form1.chkAllCustomers.enabled(True)
+gui.Form1.chkAllCustomers.alignment(0)
+gui.Form1.chkAllCustomers.fontname("Arial")
+gui.Form1.chkAllCustomers.fontsize(8)
+gui.Form1.chkAllCustomers.event(click,chkallcustomers_click)
+gui.Form1.chkAllCustomers.defaultvalue("")
+gui.Form1.chkAllCustomers.controlgroup(0)
+gui.Form1.cmdPrint.create(button)
+gui.Form1.cmdPrint.caption("Print")
+gui.Form1.cmdPrint.visible(True)
+gui.Form1.cmdPrint.size(1200,375)
+gui.Form1.cmdPrint.zorder(0)
+gui.Form1.cmdPrint.position(200,800)
+gui.Form1.cmdPrint.enabled(True)
+gui.Form1.cmdPrint.fontname("Arial")
+gui.Form1.cmdPrint.fontsize(8)
+gui.Form1.cmdPrint.event(click,cmdprint_click)
+gui.Form1.cmdPrint.defaultvalue("")
+gui.Form1.cmdPrint.controlgroup(0)
+gui.Form1.lbl1.create(label,"Beginning Customer",True,1860,255,1,200,90,True,0,Arial,8,-2147483633,0)
+gui.Form1.lbl1.defaultvalue("")
+gui.Form1.lbl1.controlgroup(0)
+gui.Form1.lbl2.create(label,"Ending Customer",True,1935,255,1,2200,90,True,0,Arial,8,-2147483633,0)
+gui.Form1.lbl2.defaultvalue("")
+gui.Form1.lbl2.controlgroup(0)
+
+
+Program.Sub.ScreenSU.End
+
+Program.Sub.Preflight.Start
+
+
+Variable.UDT.uCustList.Define("Customer",String,CUSTOMER)
+Variable.UDT.uCustList.Define("CUSTOMERNAME",String,NAME_CUSTOMER)
+
+
+Variable.uGlobal.uCustList.Declare("uCustList")
+Variable.UDT.uReport.Define("CUSTOMER",String,CUSTOMER)
+Variable.UDT.uReport.Define("NAME_CUSTOMER",String,NAME_CUSTOMER)
+Variable.UDT.uReport.Define("PROJECT",String,PROJECT)
+Variable.UDT.uReport.Define("PHASE",String,PHASE)
+Variable.UDT.uReport.Define("JOB",String,JOB)
+Variable.UDT.uReport.Define("SUFFIX",String,SUFFIX)
+Variable.UDT.uReport.Define("PART",String,PART)
+Variable.UDT.uReport.Define("DESCRIPTION",String,DESCRIPTION)
+Variable.UDT.uReport.Define("USER_1",String,USER_1)
+Variable.UDT.uReport.Define("USER_2",String,USER_2)
+Variable.UDT.uReport.Define("BIRUNID",Long)
+Variable.UDT.uReport.Define("COST",String)
+Variable.UDT.uReport.Define("DATE_ORDER",String,DATE_OPENED)
+Variable.uGlobal.uWOs.Declare("uReport")
+Variable.uGlobal.uWOHist.Declare("uReport")
+Variable.Global.iBILogID.Declare(Long,0)
+Variable.Global.iBIRunID.Declare(Long,0)
+Program.Sub.Preflight.End
+
+Program.Sub.Main.Start
+F.Intrinsic.Control.SetErrorHandler("Main_Err")
+F.Intrinsic.Control.ClearErrors
+
+V.Local.sError.Declare(String)
+V.Local.sSql.Declare(String)
+
+F.ODBC.Connection!CONX.OpenConnection(V.Ambient.PDSN,V.Ambient.PUser,V.Ambient.PPass)
+'clear out BI table
+F.Intrinsic.String.Concat("delete from GCG_4118_CUST_JOBS",,V.Local.sSql)
+F.ODBC.Connection!CONX.Execute(V.Local.sSql)
+
+Gui.Form1..Show
+
+F.Intrinsic.Control.ExitSub
+
+F.Intrinsic.Control.Label("Main_Err")
+F.Intrinsic.Control.If(V.Ambient.ErrorNumber,<>,0)
+	Function.Intrinsic.String.Concat("Project: GCG_4118_BI_CUST_JOBS.gas",V.Ambient.Newline,V.Ambient.Newline,"Subroutine: ",V.Ambient.CurrentSubroutine,V.Ambient.NewLine,"Error Occurred ",V.Ambient.ErrorNumber," with description ",V.Ambient.ErrorDescription,V.Local.sError)
+	F.Intrinsic.UI.Msgbox(V.Local.sError)
+	F.Intrinsic.Control.CallSub(Form1_unload)
+Function.Intrinsic.Control.EndIf
+
+
+Program.Sub.Main.End
+
+program.sub.form1_unload.start
+'end program
+F.Intrinsic.Control.End
+
+
+program.sub.form1_unload.end
+
+program.sub.cmdcusstart_click.start
+F.Intrinsic.Control.SetErrorHandler("cmdcusstart_click_Err")
+F.Intrinsic.Control.ClearErrors
+
+V.Local.sError.Declare(String)
+V.Local.sRet.Declare(String)
+
+F.Intrinsic.UI.SetBrowserHotTypeAhead(True)
+F.Intrinsic.UI.Browser(205,"",V.Local.sRet)
+F.Intrinsic.Control.If(V.Local.sRet,<>,"***CANCEL***")
+	F.Intrinsic.String.Split(V.Local.sRet,"*!*",V.Local.sRet)
+	Gui.Form1.txtCusStart.Text(V.Local.sRet(0).Trim)
+F.Intrinsic.Control.EndIf
+Gui.Form1.txtCusEnd.text(V.Screen.Form1!txtCusStart.Text)
+
+F.Intrinsic.Control.ExitSub
+
+F.Intrinsic.Control.Label("cmdcusstart_click_Err")
+F.Intrinsic.Control.If(V.Ambient.ErrorNumber,<>,0)
+	Function.Intrinsic.String.Concat("Project: GCG_4118_BI_CUST_JOBS.gas",V.Ambient.Newline,V.Ambient.Newline,"Subroutine: ",V.Ambient.CurrentSubroutine,V.Ambient.NewLine,"Error Occurred ",V.Ambient.ErrorNumber," with description ",V.Ambient.ErrorDescription,V.Local.sError)
+	F.Intrinsic.UI.Msgbox(V.Local.sError)
+	F.Intrinsic.Control.CallSub(Form1_unload)
+Function.Intrinsic.Control.EndIf
+
+
+program.sub.cmdcusstart_click.end
+
+program.sub.cmdcusend_click.start
+F.Intrinsic.Control.SetErrorHandler("cmdcusend_click_Err")
+F.Intrinsic.Control.ClearErrors
+
+V.Local.sError.Declare(String)
+V.Local.sRet.Declare(String)
+
+F.Intrinsic.UI.SetBrowserHotTypeAhead(True)
+F.Intrinsic.UI.Browser(205,"",V.Local.sRet)
+F.Intrinsic.Control.If(V.Local.sRet,<>,"***CANCEL***")
+	F.Intrinsic.String.Split(V.Local.sRet,"*!*",V.Local.sRet)
+	Gui.Form1.txtCusEnd.Text(V.Local.sRet(0).Trim)
+F.Intrinsic.Control.EndIf
+F.Intrinsic.Control.ExitSub
+
+F.Intrinsic.Control.Label("cmdcusend_click_Err")
+F.Intrinsic.Control.If(V.Ambient.ErrorNumber,<>,0)
+	Function.Intrinsic.String.Concat("Project: GCG_4118_BI_CUST_JOBS.gas",V.Ambient.Newline,V.Ambient.Newline,"Subroutine: ",V.Ambient.CurrentSubroutine,V.Ambient.NewLine,"Error Occurred ",V.Ambient.ErrorNumber," with description ",V.Ambient.ErrorDescription,V.Local.sError)
+	F.Intrinsic.UI.Msgbox(V.Local.sError)
+	F.Intrinsic.Control.CallSub(Form1_unload)
+Function.Intrinsic.Control.EndIf
+
+
+program.sub.cmdcusend_click.end
+
+program.sub.chkallcustomers_click.start
+F.Intrinsic.Control.SetErrorHandler("chkallcustomers_click_Err")
+F.Intrinsic.Control.ClearErrors
+
+V.Local.sError.Declare(String)
+F.Intrinsic.Control.If(V.Screen.Form1!chkAllCustomers.Value,=,1)
+	Gui.Form1.txtCusStart.Enabled(false)
+	Gui.Form1.txtCusEnd.Enabled(false)
+	Gui.Form1.cmdCusStart.Enabled(false)
+	Gui.Form1.cmdCusEnd.Enabled(false)
+	Gui.Form1.txtCusStart.Text("")
+	Gui.Form1.txtCusEnd.Text("")
+F.Intrinsic.Control.Elseif(V.Screen.Form1!chkAllCustomers.Value,=,0)
+	Gui.Form1.txtCusStart.Enabled(true)
+	Gui.Form1.txtCusStart.SetFocus
+	Gui.Form1.txtCusEnd.Enabled(true)
+	Gui.Form1.cmdCusStart.Enabled(true)
+	Gui.Form1.cmdCusEnd.Enabled(true)
+F.Intrinsic.Control.EndIf
+	
+F.Intrinsic.Control.ExitSub
+
+F.Intrinsic.Control.Label("chkallcustomers_click_Err")
+F.Intrinsic.Control.If(V.Ambient.ErrorNumber,<>,0)
+	Function.Intrinsic.String.Concat("Project: GCG_4118_BI_CUST_JOBS.gas",V.Ambient.Newline,V.Ambient.Newline,"Subroutine: ",V.Ambient.CurrentSubroutine,V.Ambient.NewLine,"Error Occurred ",V.Ambient.ErrorNumber," with description ",V.Ambient.ErrorDescription,V.Local.sError)
+	F.Intrinsic.UI.Msgbox(V.Local.sError)
+	F.Intrinsic.Control.CallSub(Form1_unload)
+Function.Intrinsic.Control.EndIf
+
+
+program.sub.chkallcustomers_click.end
+
+program.sub.cmdprint_click.start
+F.Intrinsic.Control.SetErrorHandler("cmdprint_click_Err")
+F.Intrinsic.Control.ClearErrors
+
+V.Local.sError.Declare(String)
+V.Local.sRet.Declare(String)
+V.Local.sSQL.Declare(String)
+V.Local.i.Declare(Long)
+V.Local.iUb.Declare(Long)
+
+V.Local.iBIRUNID.Declare(Long)
+V.Local.iRPTID.Declare(Long)
+V.Local.iLogID.Declare(Long)
+V.Local.fCost.Declare(Float)
+
+Gui.Form1..Visible(false)
+F.Global.BI.GetRunID(V.Global.iBIRunID)
+F.Global.BI.startLogging(V.Global.iBIRunID,V.Local.iRPTID,-1,"",V.Global.iBILogID)
+
+
+F.Intrinsic.Control.If(V.Screen.Form1!chkAllCustomers.Value,=,0)
+		F.Intrinsic.Control.If(V.Screen.Form1!txtCusStart.Text,=,"","OR",V.Screen.Form1!txtCusEnd.Text,=,"")
+			F.Intrinsic.UI.Msgbox("You must select a valid range of customers")
+			F.Intrinsic.Control.ExitSub
+		F.Intrinsic.Control.Else
+			F.intrinsic.string.concat("SELECT DISTINCT CUSTOMER FROM V_CUSTOMER_MASTER WHERE CUSTOMER BETWEEN'",V.screen.form1!txtCusStart.text,"' and '",V.screen.form1!txtCusEnd.text,"'",V.local.sSql)
+			F.ODBC.Connection!CONX.OpenRecordsetRO("rst",V.Local.sSQL)
+			F.ODBC.Connection!CONX.ExecuteAndReturn(V.Local.sSQL,V.Local.sRet)
+			F.ODBC.CONX!rst.Close
+			F.Intrinsic.Control.If(V.Local.sRet.Trim,=,"")
+				F.Intrinsic.UI.Msgbox("You must select a valid range of customers")
+			F.Intrinsic.Control.ExitSub
+			F.Intrinsic.Control.EndIf
+		F.Intrinsic.Control.EndIf
+F.Intrinsic.Control.EndIf
+
+
+	
+	V.uGlobal.uCustList.Redim(-1,-1)
+	
+	
+	F.Intrinsic.Control.If(V.Screen.Form1!chkAllCustomers.Value,=,0)
+		F.intrinsic.string.concat("SELECT CUSTOMER, NAME_CUSTOMER FROM V_CUSTOMER_MASTER WHERE CUSTOMER BETWEEN'",V.screen.form1!txtCusStart.text,"' and '",V.screen.form1!txtCusEnd.text,"' and customer in (select customer from v_project_master)",V.local.sSql)
+	F.Intrinsic.Control.Else
+		V.LOCAL.SSQL.Set("SELECT CUSTOMER,NAME_CUSTOMER FROM V_CUSTOMER_MASTER where customer in (select customer from v_project_master)")
+	F.Intrinsic.Control.EndIf
+	F.ODBC.Connection!CONX.OpenRecordsetRO("rst",V.Local.sSQL)
+	F.Intrinsic.Control.If(V.ODBC.CONX!rst.EOF,=,False)
+		F.Intrinsic.Variable.LoadUDTFromRecordset("CONX","rst","v.uGlobal.uCustList",False)
+	F.Intrinsic.Control.EndIf
+	F.ODBC.CONX!rst.Close
+	F.Intrinsic.Variable.UDTMultiQuickSort(V.uGlobal.uCustList!Customer,False)
+
+	
+	V.Local.i.Set(-1)
+	V.uGlobal.uReport.Redim(-1,-1)
+	
+	F.Intrinsic.Control.For(V.Local.i,0,V.uGlobal.uCustList.UBound,1)
+	F.Intrinsic.String.Concat("SELECT JOB.PROJECT,JOB.PHASE, JOB.JOB, JOB.SUFFIX, JOB.PART, JOB.DESCRIPTION, JOB.DATE_OPENED, US.USER_1, US.USER_2, PRJ.CUSTOMER,CUS.NAME_CUSTOMER FROM V_JOB_HEADER AS JOB LEFT JOIN V_WO_USER_FLDS AS US ON JOB.JOB = US.JOB AND JOB.SUFFIX = US.SUFFIX LEFT JOIN V_PROJECT_MASTER AS PRJ ON PRJ.PROJECT = JOB.PROJECT LEFT JOIN V_CUSTOMER_MASTER AS CUS ON CUS.CUSTOMER = PRJ.CUSTOMER WHERE CUSTOMER = '",V.uGlobal.uCustList(V.Local.i)!Customer.Trim,"'",V.Local.sSQL)
+	F.ODBC.Connection!CONX.OpenLocalRecordsetRO("rst",V.Local.sSQL)
+	F.Intrinsic.Control.If(V.ODBC.CONX!rst.EOF,=,False)
+		F.Intrinsic.Variable.LoadUDTFromRecordset("CONX","RST","V.uglobal.uWOs",False)
+	F.Intrinsic.Control.EndIf
+	F.ODBC.CONX!rst.Close
+	F.Intrinsic.Control.Next(V.Local.i)
+	
+	V.uGlobal.uWOHist.Redim(-1,-1)
+	
+	V.Local.i.Set(-1)
+
+	F.Intrinsic.Control.For(V.Local.i,0,V.uGlobal.uCustList.UBound,1)
+	F.Intrinsic.String.Concat("SELECT JOB.PROJECT,JOB.PHASE, JOB.JOB, JOB.SUFFIX, JOB.PART, JOB.DESCRIPTION, JOB.DATE_OPENED, US.USER_1, US.USER_2, PRJ.CUSTOMER,CUS.NAME_CUSTOMER FROM V_JOB_HIST_MAST AS JOB LEFT JOIN V_WO_USER_FLDS AS US ON JOB.JOB = US.JOB AND JOB.SUFFIX = US.SUFFIX LEFT JOIN V_PROJECT_MASTER AS PRJ ON PRJ.PROJECT = JOB.PROJECT LEFT JOIN V_CUSTOMER_MASTER AS CUS ON CUS.CUSTOMER = PRJ.CUSTOMER WHERE CUSTOMER = '",V.uGlobal.uCustList(V.Local.i)!Customer.Trim,"'",V.Local.sSQL)
+	F.ODBC.Connection!CONX.OpenLocalRecordsetRO("rst",V.Local.sSQL)
+	F.Intrinsic.Control.If(V.ODBC.CONX!rst.EOF,=,False)
+		F.Intrinsic.Variable.LoadUDTFromRecordset("CONX","RST","V.uGlobal.uWOHist",False)
+	F.Intrinsic.Control.EndIf
+	F.ODBC.CONX!rst.Close
+	F.Intrinsic.Control.Next(V.Local.i)
+	
+	V.Local.i.Set(-1)
+
+	F.Intrinsic.Control.For(V.Local.i,0,V.uGlobal.uWOs.UBound,1)
+		F.Intrinsic.String.Format(V.uGlobal.uWOs(V.LOCAL.I)!DATE_ORDER,"yyyy-mm-dd",V.uGlobal.uWOs(v.Local.i)!DATE_ORDER)
+		F.Intrinsic.Control.If(V.uGlobal.uWOs(V.Local.i)!Suffix,<>,"")
+			F.Intrinsic.String.Concat("SELECT SUM(DOLLARS_ACTUAL)  FROM V_JOB_OPERATIONS WHERE JOB = '",V.UGLOBAL.UWOS(V.Local.i)!Job.Trim,"' AND SUFFIX ='",V.uGlobal.uWOs(V.Local.i)!Suffix.Trim,"'",V.Local.sSQL)
+		F.Intrinsic.Control.Else
+			F.Intrinsic.String.Concat("SELECT SUM(DOLLARS_ACTUAL) FROM V_JOB_OPERATIONS WHERE JOB = '",V.uGlobal.uWOs(V.Local.i)!Job.Trim,"' AND SUFFIX = ''",V.Local.sSQL)
+		F.Intrinsic.Control.EndIf
+		F.ODBC.Connection!CONX.OpenLocalRecordsetRO("rst",V.Local.sSQL)
+		F.Intrinsic.Control.If(V.ODBC.CONX!rst.EOF,=,True)
+			V.uGlobal.uWOs(V.Local.i)!Cost.Set("0")
+		F.Intrinsic.Control.Else
+			V.uGlobal.uWOs(v.Local.i)!Cost.Set(V.ODBC.CONX!rst.FieldVal!EXPR_1)
+		F.Intrinsic.Control.EndIf
+		F.ODBC.CONX!rst.Close
+	F.Intrinsic.Control.Next(V.Local.i)
+
+	V.Local.i.Set(-1)
+
+	F.Intrinsic.Control.For(V.Local.i,0,V.uGlobal.uWOHist.UBound,1)
+		F.Intrinsic.String.Format(V.uGlobal.uWOHist(V.LOCAL.I)!DATE_ORDER,"yyyy-mm-dd",V.uGlobal.uWOHist(v.Local.i)!DATE_ORDER)
+		F.Intrinsic.Control.If(V.uGlobal.uWOHist(V.Local.i)!Suffix,<>,"")
+			F.Intrinsic.String.Concat("SELECT SUM(DOLLARS_ACTUAL) FROM V_JOB_HIST_OPS WHERE JOB = '",V.uGlobal.uWOHist(V.Local.i)!Job.Trim,"' AND SUFFIX = '",V.uGlobal.uWOHist(V.Local.i)!Suffix.Trim,"'",V.Local.sSQL)
+		F.Intrinsic.Control.Else
+			F.Intrinsic.String.Concat("SELECT SUM(DOLLARS_ACTUAL) FROM V_JOB_HIST_OPS WHERE JOB = '",V.uGlobal.uWOHist(V.Local.i)!JOB.Trim,"' AND SUFFIX = ''",V.Local.sSQL)
+		F.Intrinsic.Control.EndIf
+		F.ODBC.Connection!CONX.OpenLocalRecordsetRO("rst",V.Local.sSQL)
+		F.Intrinsic.Control.If(V.ODBC.CONX!rst.EOF,=,True)
+			V.uGlobal.uWOHist(V.Local.i)!Cost.Set("0")
+		F.Intrinsic.Control.Else
+			V.uGlobal.uWOHist(V.Local.i)!Cost.Set(V.ODBC.CONX!rst.FieldVal!EXPR_1)
+		F.Intrinsic.Control.EndIf
+		F.ODBC.CONX!rst.Close
+	F.Intrinsic.Control.Next(V.Local.i)
+
+F.Intrinsic.Variable.SetUDTFieldReference(V.uGlobal.uWOs!Project,"Project")
+F.Intrinsic.Variable.SetUDTFieldReference(V.uGlobal.uWOs!Job,"Job")
+F.Intrinsic.Variable.SetUDTFieldReference(V.uGlobal.uWOs!Suffix,"Suffix")
+F.Intrinsic.Variable.SetUDTFieldReference(V.uGlobal.uWOs!Part,"Part")
+F.Intrinsic.Variable.SetUDTFieldReference(V.uGlobal.uWOs!Description,"Description")
+F.Intrinsic.Variable.SetUDTFieldReference(V.uGlobal.uWOs!DATE_ORDER,"Date_Order")
+F.Intrinsic.Variable.SetUDTFieldReference(V.uGlobal.uWOs!Cost,"Cost")
+F.Intrinsic.Variable.SetUDTFieldReference(V.uGlobal.uWOs!User_1,"User_1")
+F.Intrinsic.Variable.SetUDTFieldReference(V.uGlobal.uWOs!User_2,"User_2")
+F.Intrinsic.Variable.SetUDTFieldReference(V.uGlobal.uWOs!BIRUNID,"BIRUNID")
+F.Intrinsic.Variable.SetUDTFieldReference(V.uGlobal.uWOHist!Project,"Project")
+F.Intrinsic.Variable.SetUDTFieldReference(V.uGlobal.uWOHIST!Job,"Job")
+F.Intrinsic.Variable.SetUDTFieldReference(V.uGlobal.uWOHist!Suffix,"Suffix")
+F.Intrinsic.Variable.SetUDTFieldReference(V.uGlobal.uWOHist!Part,"Part")
+F.Intrinsic.Variable.SetUDTFieldReference(V.uGlobal.uWOHist!Description,"Description")
+F.Intrinsic.Variable.SetUDTFieldReference(V.uGlobal.uWOHist!Date_Order,"Date_Order")
+F.Intrinsic.Variable.SetUDTFieldReference(V.uGlobal.uWOHist!Cost,"Cost")
+F.Intrinsic.Variable.SetUDTFieldReference(V.uGlobal.uWOHist!User_1,"User_1")
+F.Intrinsic.Variable.SetUDTFieldReference(V.uGlobal.uWOHist!User_2,"User_2")
+F.Intrinsic.Variable.SetUDTFieldReference(V.uGlobal.uWOHist!BIRUNID,"BIRUNID")
+F.Intrinsic.Variable.SetUDTFieldReference(V.uGlobal.uWOHist!CUSTOMER,"CUSTOMER")
+F.Intrinsic.Variable.SetUDTFieldReference(V.uGlobal.uWOHist!NAME_CUSTOMER,"NAME_CUSTOMER")
+
+F.Intrinsic.Variable.UDTSetMemberValue(V.uGlobal.uWOHist!BIRUNID,V.Global.iBIRunID)
+F.Intrinsic.Variable.UDTSetMemberValue(V.uGlobal.uWOs!BIRUNID,V.Global.iBIRunID)
+	
+F.Odbc.Connection!CONX.OpenLocalRecordsetRW("RST","SELECT * FROM GCG_4118_CUST_JOBS")
+F.Intrinsic.Control.If(V.uGlobal.uWOHist.UBound,<>,-1)
+	F.Intrinsic.Variable.SaveUDTToRecordset("CONX","RST"," v.uGlobal.uwohist")
+F.Intrinsic.Control.EndIf
+F.Intrinsic.Control.If(V.uGlobal.uWOs.UBound,<>,-1)
+	F.Intrinsic.Variable.SaveUDTToRecordset("CONX","RST","V.uGlobal.uwos")
+F.Intrinsic.Control.EndIf
+F.ODBC.CONX!rst.Close
+
+
+F.Intrinsic.Control.CallSub(Callbi)
+
+F.Intrinsic.Control.CallSub(Form1_unload)
+
+F.Intrinsic.Control.ExitSub
+
+F.Intrinsic.Control.Label("cmdprint_click_Err")
+F.Intrinsic.Control.If(V.Ambient.ErrorNumber,<>,0)
+	Function.Intrinsic.String.Concat("Project: GCG_4118_BI_CUST_JOBS.gas",V.Ambient.Newline,V.Ambient.Newline,"Subroutine: ",V.Ambient.CurrentSubroutine,V.Ambient.NewLine,"Error Occurred ",V.Ambient.ErrorNumber," with description ",V.Ambient.ErrorDescription,V.Local.sError)
+	F.Intrinsic.UI.Msgbox(V.Local.sError)
+	F.Intrinsic.Control.CallSub(Form1_unload)
+Function.Intrinsic.Control.EndIf
+
+
+program.sub.cmdprint_click.end
+
+program.sub.txtcusstart_lostfocus.start
+F.Intrinsic.Control.SetErrorHandler("txtcusstart_lostfocus_Err")
+F.Intrinsic.Control.ClearErrors
+
+V.Local.sError.Declare(String)
+Gui.Form1.txtCusEnd.text(V.Screen.Form1!txtCusStart.Text)
+
+F.Intrinsic.Control.ExitSub
+
+F.Intrinsic.Control.Label("txtcusstart_lostfocus_Err")
+F.Intrinsic.Control.If(V.Ambient.ErrorNumber,<>,0)
+	Function.Intrinsic.String.Concat("Project: GCG_4118_BI_CUST_JOBS.gas",V.Ambient.Newline,V.Ambient.Newline,"Subroutine: ",V.Ambient.CurrentSubroutine,V.Ambient.NewLine,"Error Occurred ",V.Ambient.ErrorNumber," with description ",V.Ambient.ErrorDescription,V.Local.sError)
+	F.Intrinsic.UI.Msgbox(V.Local.sError)
+	F.Intrinsic.Control.CallSub(Form1_unload)
+Function.Intrinsic.Control.EndIf
+
+
+program.sub.txtcusstart_lostfocus.end
+
+Program.Sub.CallBI.Start
+F.Intrinsic.Control.SetErrorHandler("CallBI_Err")
+F.Intrinsic.Control.ClearErrors
+
+V.Local.sError.Declare(String)
+V.Local.iRet.Declare(String)
+V.Local.sParams.Declare(String)
+V.Local.sParamValues.Declare(String)
+
+V.Local.sParams.Set("BIRUNID")
+V.Local.sParamValues.Set(V.Global.iBIRunID)
+F.Intrinsic.Debug.DumpVariableList
+F.Global.BI.RunReportPreProcessor(V.Global.iBIRunID,V.Global.iBILogID,V.Local.sParams,V.Local.sParamValues,"",-1,True,"",-1,"",-1,"","",V.Local.iRet)
+
+
+F.Intrinsic.Control.ExitSub
+
+F.Intrinsic.Control.Label("CallBI_Err")
+F.Intrinsic.Control.If(V.Ambient.ErrorNumber,<>,0)
+	Function.Intrinsic.String.Concat("Project: GCG_4118_BI_CUST_JOBS.gas",V.Ambient.Newline,V.Ambient.Newline,"Subroutine: ",V.Ambient.CurrentSubroutine,V.Ambient.NewLine,"Error Occurred ",V.Ambient.ErrorNumber," with description ",V.Ambient.ErrorDescription,V.Local.sError)
+	F.Intrinsic.UI.Msgbox(V.Local.sError)
+Function.Intrinsic.Control.EndIf
+
+
+Program.Sub.CallBI.End
+
+Program.Sub.Comments.Start
+${$0$}$GCG_BI_CUST_JOBS$}$SFF$}$5/29/2014
+${$3$}$0$}$$}$-1$}$-1$}$$}$1/1/1900$}$THIS PREPROC WILL QUERY FOR ANY PROJECT/PHASES THAT EXIST FOR THE CUSTOMER, FOR EACH PROJ/PHASE FOUND FOR THE CUSTOMER, GET ANY JOBS FROM JOB_HEADER AND JOB_HIST_HEAD. RECORDS WRITTEN TO BI TABLE
+Program.Sub.Comments.End
+
